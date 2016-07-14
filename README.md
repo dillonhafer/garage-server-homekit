@@ -91,3 +91,9 @@ Latest binaries available at https://github.com/dillonhafer/garage-server-homeki
    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
    SUCH DAMAGE.
+
+## Notes
+
+I would like to find a license-free implementation of the HomeKit bridge to allow this
+project to be freely distributed in the future. I apologize for the current
+inconvenience.
