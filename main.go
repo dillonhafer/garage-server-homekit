@@ -4,11 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
 	"github.com/brutella/hc/characteristic"
 	"github.com/brutella/log"
+	"github.com/dillonhafer/garage-server/door"
 )
 
 const Version = "0.0.1"
@@ -22,6 +24,29 @@ type Options struct {
 }
 
 var options Options
+
+func toggleDoorIf(target string, o Options) {
+	if status, err := door.CheckDoorStatus(o.statusPin); err != nil {
+		if status == target {
+			door.ToggleSwitch(o.relayPin, o.sleepTimeout)
+		}
+	}
+}
+
+func pollDoorStatus(acc *GarageDoorOpener, pin int) {
+	for {
+		if status, err := door.CheckDoorStatus(pin); err != nil {
+			switch status {
+			case "open":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
+			case "closed":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
+			}
+		}
+
+		time.Sleep(time.Second)
+	}
+}
 
 func main() {
 	flag.Usage = func() {
