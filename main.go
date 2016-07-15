@@ -25,10 +25,17 @@ type Options struct {
 
 var options Options
 
-func toggleDoorIf(target string, o Options) {
-	if status, err := door.CheckDoorStatus(o.statusPin); err != nil {
-		if status == target {
-			door.ToggleSwitch(o.relayPin, o.sleepTimeout)
+func toggleDoor(o Options) func(int) {
+	return func(targetState int) {
+		nextState := "closed"
+		if targetState == characteristic.TargetDoorStateOpen {
+			nextState = "open"
+		}
+
+		if currentDoorState, err := door.CheckDoorStatus(o.statusPin); err != nil {
+			if currentDoorState != nextState {
+				door.ToggleSwitch(o.relayPin, o.sleepTimeout)
+			}
 		}
 	}
 }
@@ -81,14 +88,7 @@ func main() {
 	}
 
 	acc := NewGarageDoorOpener(info)
-	acc.GarageDoorOpener.TargetDoorState.OnValueRemoteUpdate(func(targetState int) {
-		switch targetState {
-		case characteristic.TargetDoorStateClosed:
-			toggleDoorIf("open", options)
-		case characteristic.TargetDoorStateOpen:
-			toggleDoorIf("closed", options)
-		}
-	})
+	acc.GarageDoorOpener.TargetDoorState.OnValueRemoteUpdate(toggleDoor(options))
 
 	t, err := hc.NewIPTransport(hc.Config{Pin: options.pin}, acc.Accessory)
 	if err != nil {
