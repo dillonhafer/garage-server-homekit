@@ -1,12 +1,29 @@
 package main
 
 import (
+	"time"
+
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
 	"github.com/brutella/hc/characteristic"
 	"github.com/brutella/log"
 	"github.com/dillonhafer/garage-server/door"
 )
+
+func pollDoorStatus(acc *GarageDoorOpener, pin int) {
+	for {
+		if status, err := door.CheckDoorStatus(pin); err != nil {
+			switch status {
+			case "open":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
+			case "closed":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
+			}
+		}
+
+		time.Sleep(time.Second)
+	}
+}
 
 func main() {
 	log.Verbose = true
@@ -19,25 +36,12 @@ func main() {
 	}
 
 	acc := NewGarageDoorOpener(info)
-	acc.GarageDoorOpener.CurrentDoorState.OnValueRemoteUpdate(func(int) {
-		status, _ := door.CheckDoorStatus(25)
-		switch status {
-		case "open":
-			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
-			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
-		case "closed":
-			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
-		}
-	})
-
 	acc.GarageDoorOpener.TargetDoorState.OnValueRemoteUpdate(func(targetState int) {
 		switch targetState {
 		case characteristic.TargetDoorStateClosed:
 			closeGarage()
-			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
 		case characteristic.TargetDoorStateOpen:
 			openGarage()
-			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
 		}
 	})
 
@@ -46,9 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hc.OnTermination(func() {
-		t.Stop()
-	})
-
+	go pollDoorStatus(acc, 10)
+	hc.OnTermination(t.Stop)
 	t.Start()
 }
