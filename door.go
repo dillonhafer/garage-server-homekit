@@ -1,7 +1,10 @@
 package main
 
 import (
+	"time"
+
 	"github.com/brutella/hc/accessory"
+	"github.com/brutella/hc/characteristic"
 	"github.com/brutella/hc/service"
 	"github.com/dillonhafer/garage-server/door"
 )
@@ -27,10 +30,17 @@ func toggleDoorIf(target string, o Options) {
 	}
 }
 
-func openGarage(o Options) {
-	toggleDoorIf("closed", o)
-}
+func pollDoorStatus(acc *GarageDoorOpener, pin int) {
+	for {
+		if status, err := door.CheckDoorStatus(pin); err != nil {
+			switch status {
+			case "open":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
+			case "closed":
+				acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
+			}
+		}
 
-func closeGarage(o Options) {
-	toggleDoorIf("open", o)
+		time.Sleep(time.Second)
+	}
 }
