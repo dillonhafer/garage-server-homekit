@@ -28,11 +28,9 @@ func toggleDoorIf(target string) {
 }
 
 func openGarage() {
-	println("OPEN")
 	toggleDoorIf("closed")
 }
 
 func closeGarage() {
-	println("CLOSE")
 	toggleDoorIf("open")
 }
