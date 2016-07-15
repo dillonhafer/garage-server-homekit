@@ -15,6 +15,7 @@ func main() {
 	info := accessory.Info{
 		Name:         "Garage Door",
 		Manufacturer: "Dillon Hafer",
+		Model:        "Raspberry Pi",
 	}
 
 	acc := NewGarageDoorOpener(info)
@@ -23,6 +24,7 @@ func main() {
 		switch status {
 		case "open":
 			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
+			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
 		case "closed":
 			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
 		}
@@ -32,8 +34,10 @@ func main() {
 		switch targetState {
 		case characteristic.TargetDoorStateClosed:
 			closeGarage()
+			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateClosed)
 		case characteristic.TargetDoorStateOpen:
 			openGarage()
+			acc.GarageDoorOpener.CurrentDoorState.SetValue(characteristic.CurrentDoorStateOpen)
 		}
 	})
 
