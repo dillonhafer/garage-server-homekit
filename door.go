@@ -20,7 +20,6 @@ func NewGarageDoorOpener(info accessory.Info) *GarageDoorOpener {
 }
 
 func toggleDoorIf(target string, o Options) {
-	println(o.sleepTimeout, o.statusPin, o.relayPin)
 	if status, err := door.CheckDoorStatus(o.statusPin); err != nil {
 		if status == target {
 			door.ToggleSwitch(o.relayPin, o.sleepTimeout)
