@@ -65,7 +65,7 @@ func main() {
 		}
 	})
 
-	t, err := hc.NewIPTransport(hc.Config{Pin: "32191123"}, acc.Accessory)
+	t, err := hc.NewIPTransport(hc.Config{Pin: options.pin}, acc.Accessory)
 	if err != nil {
 		log.Fatal(err)
 	}
