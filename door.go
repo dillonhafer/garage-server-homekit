@@ -22,7 +22,7 @@ func NewGarageDoorOpener(info accessory.Info) *GarageDoorOpener {
 func toggleDoorIf(target string) {
 	if status, err := door.CheckDoorStatus(15); err != nil {
 		if status == target {
-			door.ToggleSwitch(15, 3)
+			door.ToggleSwitch(25, 500)
 		}
 	}
 }
