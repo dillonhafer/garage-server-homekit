@@ -19,18 +19,19 @@ func NewGarageDoorOpener(info accessory.Info) *GarageDoorOpener {
 	return &acc
 }
 
-func toggleDoorIf(target string) {
-	if status, err := door.CheckDoorStatus(15); err != nil {
+func toggleDoorIf(target string, o Options) {
+	println(o.sleepTimeout, o.statusPin, o.relayPin)
+	if status, err := door.CheckDoorStatus(o.statusPin); err != nil {
 		if status == target {
-			door.ToggleSwitch(25, 500)
+			door.ToggleSwitch(o.relayPin, o.sleepTimeout)
 		}
 	}
 }
 
-func openGarage() {
-	toggleDoorIf("closed")
+func openGarage(o Options) {
+	toggleDoorIf("closed", o)
 }
 
-func closeGarage() {
-	toggleDoorIf("open")
+func closeGarage(o Options) {
+	toggleDoorIf("open", o)
 }

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/brutella/hc"
@@ -9,6 +12,18 @@ import (
 	"github.com/brutella/log"
 	"github.com/dillonhafer/garage-server/door"
 )
+
+const Version = "0.0.1"
+
+type Options struct {
+	pin          string
+	relayPin     int
+	statusPin    int
+	sleepTimeout int
+	version      bool
+}
+
+var options Options
 
 func pollDoorStatus(acc *GarageDoorOpener, pin int) {
 	for {
@@ -26,6 +41,28 @@ func pollDoorStatus(acc *GarageDoorOpener, pin int) {
 }
 
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "usage:  %s [options]\n", os.Args[0])
+		flag.PrintDefaults()
+	}
+
+	flag.StringVar(&options.pin, "pin", "", "8-digit Pin for securing garage door")
+	flag.IntVar(&options.relayPin, "relay-pin", 25, "GPIO pin of relay")
+	flag.IntVar(&options.statusPin, "status-pin", 10, "GPIO pin of reed switch")
+	flag.IntVar(&options.sleepTimeout, "sleep", 500, "Time in milliseconds to keep switch closed")
+	flag.BoolVar(&options.version, "version", false, "print version and exit")
+	flag.Parse()
+
+	if options.version {
+		fmt.Printf("garage-server-homekit v%v\n", Version)
+		os.Exit(0)
+	}
+
+	if options.pin == "" || len(options.pin) != 8 {
+		println("Pin must be and 8 digit number")
+		os.Exit(0)
+	}
+
 	log.Verbose = true
 	log.Info = true
 
@@ -39,9 +76,9 @@ func main() {
 	acc.GarageDoorOpener.TargetDoorState.OnValueRemoteUpdate(func(targetState int) {
 		switch targetState {
 		case characteristic.TargetDoorStateClosed:
-			closeGarage()
+			closeGarage(options)
 		case characteristic.TargetDoorStateOpen:
-			openGarage()
+			openGarage(options)
 		}
 	})
 
@@ -50,7 +87,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	go pollDoorStatus(acc, 10)
+	go pollDoorStatus(acc, options.statusPin)
 	hc.OnTermination(t.Stop)
 	t.Start()
 }
