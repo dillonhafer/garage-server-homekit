@@ -13,18 +13,16 @@ I really like the above relay because when the power is disconnected and restore
 ## Options
 
 ```
-  -log string
-      Path to read logs from
-  -pin int
-      8-digit Pin for securing garage door (XXX-XX-XXX)
+  -pin string
+    8-digit Pin for securing garage door
   -relay-pin int
-    	GPIO pin of relay (default 25)
+    GPIO pin of relay (default 25)
   -sleep int
-      Time in milliseconds to keep switch closed (default 100)
+    Time in milliseconds to keep switch closed (default 500)
   -status-pin int
-    	GPIO pin of reed switch (default 10)
+    GPIO pin of reed switch (default 10)
   -version
-    	print version and exit
+    print version and exit
 ```
 
 ## Installation Instructions
