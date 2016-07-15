@@ -24,6 +24,7 @@ type Options struct {
 }
 
 var options Options
+var serialNumber = os.Getenv("SERIAL_NUMBER")
 
 func toggleDoor(o Options) func(int) {
 	return func(targetState int) {
@@ -73,6 +74,11 @@ func main() {
 		os.Exit(0)
 	}
 
+	if serialNumber == "" {
+		println("You did not set SERIAL_NUMBER env var")
+		os.Exit(1)
+	}
+
 	if options.pin == "" || len(options.pin) != 8 {
 		println("Pin must be and 8 digit number")
 		os.Exit(0)
@@ -85,6 +91,7 @@ func main() {
 		Name:         "Garage Door",
 		Manufacturer: "Dillon Hafer",
 		Model:        "Raspberry Pi",
+		SerialNumber: serialNumber,
 	}
 
 	acc := NewGarageDoorOpener(info)
