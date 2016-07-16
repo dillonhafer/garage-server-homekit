@@ -29,8 +29,8 @@ I really like the above relay because when the power is disconnected and restore
 
 #### Installation Steps Overview:
 
-1. **[Download garage-server-homekit](#download-garage-server-homekit)**
-2. **[Create init.d script](#create-initd-script)**
+1. **[Download garage-server-homekit](#user-content-download-garage-server-homekit)**
+2. **[Create init.d script](#user-content-create-initd-script)**
 
 #### Download garage-server-homekit
 
