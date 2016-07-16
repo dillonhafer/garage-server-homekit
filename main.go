@@ -13,7 +13,7 @@ import (
 	"github.com/dillonhafer/garage-server/door"
 )
 
-const Version = "0.0.1"
+const Version = "1.0.0"
 
 type Options struct {
 	pin          string
