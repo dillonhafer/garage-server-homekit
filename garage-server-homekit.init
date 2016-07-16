@@ -25,6 +25,7 @@ SERVICEVERBOSE=yes
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 WORKINGDIR=/var/www
+LOG_FILE="/var/log/$NAME.log"
 DAEMON=$WORKINGDIR/$NAME
 DAEMON_ARGS="-pin=$PIN -relay-pin=$RELAY_PIN -sleep=$SLEEP_INTERVAL -status-pin=$STATUS_PIN"
 
@@ -60,12 +61,12 @@ do_start()
 	export SERIAL_NUMBER=$SERIAL_NUMBER
   start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile \
   --test --chdir $WORKINGDIR \
-  --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS >> /var/log/$NAME.log 2>&1" \
+  --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS >> $LOG_FILE 2>&1" \
   || return 1
 
   start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile \
   --background --chdir $WORKINGDIR \
-  --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS >> /var/log/$NAME.log 2>&1" \
+  --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS >> $LOG_FILE 2>&1" \
   || return 2
 }
 
