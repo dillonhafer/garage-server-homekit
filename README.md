@@ -89,11 +89,16 @@ sudo service garage-server-homekit start
 
 That's it! The server is now setup!
 
-## Notes
+## Notes (the downside)
 
-I would like to find a license-free implementation of the HomeKit bridge to allow this
-project to be freely distributed in the future. I apologize for the current
-inconvenience.
+I wish I could make these garage door openers for friends and family, but sadly
+the  `hc` library is for personal-use only. There are race conditions in the
+`hc` library that I may fix in a vendored version, but I really have no reason
+to contribute to that project.
+
+I would like to find a more permissive implementation of the HomeKit bridge to
+allow this project to be freely distributed in the future. I apologize for the
+current inconvenience.
 
 **This software is dedicated to the public domain. See UNLICENSE**
 
