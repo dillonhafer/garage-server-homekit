@@ -58,7 +58,7 @@ cp $GOPATH/src/github.com/dillonhafer/garage-server-homekit/garage-server-homeki
 
 The last thing to do is to configure your init.d script to reflect your Raspberry Pi's configuration.
 
-First set the `GARAGE_SECRET` environment variable. This will ensure JSON requests to the server are authenticated. Be sure to use a very random and lengthy secret.
+First set the `PIN` environment variable.
 
 Just un-comment the following line and add your pin in the init.d script:
 
