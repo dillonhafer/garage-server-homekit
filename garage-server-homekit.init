@@ -33,7 +33,7 @@ DAEMON_ARGS="-pin=$PIN -relay-pin=$RELAY_PIN -sleep=$SLEEP_INTERVAL -status-pin=
 #   (e.g. 12391123)
 # DO NOT USE the above pin. It's an example only.
 
-SERIAL_NUMBER="$(cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2)"
+SERIAL_NUMBER="$(cat /proc/cpuinfo | grep Serial | cut -d ':' -f 2 | sed 's/^[ \t]*//;s/[ \t]*$//')"
 
 # Read configuration variable file if it is present
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
